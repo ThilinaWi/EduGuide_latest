@@ -315,6 +315,7 @@ export default function Recommendations({ recommendations, riskLevel }) {
         </div>
       )}
 
+      {/* Pomodoro Guide Modal */}
       {showPomodoroGuide && (
         <div style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
@@ -322,20 +323,147 @@ export default function Recommendations({ recommendations, riskLevel }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           zIndex: 100, padding: 20
         }}>
-          <div style={{ background: 'white', borderRadius: 16, width: '100%', maxWidth: 540, padding: 24 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-              <Clock size={20} color="#f59e0b" />
-              <h3 style={{ margin: 0 }}>Pomodoro Technique</h3>
+          <div style={{
+            background: 'white', borderRadius: 16, width: '100%', maxWidth: 600,
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            overflow: 'hidden', animation: 'fadeInUp 0.3s ease-out'
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+              padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              color: 'white'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ background: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 10 }}>
+                  <Clock size={24} color="white" />
+                </div>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>
+                    {isPomodoroSinhala ? 'පොමෝඩෝරෝ ක්‍රමය' : 'The Pomodoro Technique'}
+                  </h2>
+                  <p style={{ margin: 0, fontSize: 13, color: '#fef3c7', marginTop: 2 }}>
+                    {isPomodoroSinhala ? 'මහන්සියක් නැතුව පාඩම් කරන්න පුළුවන් සාර්ථක ක්‍රමයක්!' : 'A proven way to study without burning out!'}
+                  </p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <button
+                  onClick={() => setIsPomodoroSinhala(!isPomodoroSinhala)}
+                  style={{
+                    background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: 20,
+                    padding: '4px 10px', color: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+                  onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                >
+                  {isPomodoroSinhala ? 'English' : 'සිංහල'}
+                </button>
+                <button
+                  onClick={() => setShowPomodoroGuide(false)}
+                  style={{
+                    background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: 50,
+                    width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', color: 'white', transition: 'background 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                  onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                >
+                  <X size={18} />
+                </button>
+              </div>
             </div>
-            <p style={{ margin: 0, color: '#64748b', fontSize: 13 }}>
-              Study for 25 minutes, then take a 5 minute break. Repeat four times, then take a longer break.
-            </p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
-              <button className="btn-primary" onClick={() => setShowPomodoroGuide(false)}>Close</button>
+
+            {/* Modal Body */}
+            <div style={{ padding: 24, maxHeight: '60vh', overflowY: 'auto' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+                {/* 25 Mins Study */}
+                <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                  <div style={{
+                    background: '#fef2f2', color: '#dc2626', fontWeight: 700, fontSize: 13,
+                    padding: '6px 12px', borderRadius: 20, width: 100, textAlign: 'center', flexShrink: 0
+                  }}>
+                    {isPomodoroSinhala ? 'විනාඩි 25ක්' : '25 Mins'}
+                  </div>
+                  <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: 16 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <Target size={16} color="#dc2626" />
+                      <h4 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#0f172a' }}>
+                        {isPomodoroSinhala ? 'ගැඹුරු අවධානයක්' : 'Deep Focus Session'}
+                      </h4>
+                    </div>
+                    <p style={{ margin: 0, fontSize: 13, color: '#64748b' }}>
+                      {isPomodoroSinhala ? 'එක විෂයක් තෝරගන්න (උදා: ගණිතය හෝ විද්‍යාව). ඔයාගේ ෆෝන් එක වෙන කාමරයකින් තියන්න. හරියටම විනාඩි 25ක් කිසිම බාධාවකින් තොරව පාඩම් කරන්න.' : 'Pick one subject (e.g., Mathematics or Science). Put your phone in another room. Focus fully on reading or solving papers for exactly 25 minutes. No distractions!'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 5 Mins Break */}
+                <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                  <div style={{
+                    background: '#ecfdf5', color: '#059669', fontWeight: 700, fontSize: 13,
+                    padding: '6px 12px', borderRadius: 20, width: 100, textAlign: 'center', flexShrink: 0
+                  }}>
+                    {isPomodoroSinhala ? 'විනාඩි 5ක්' : '5 Mins'}
+                  </div>
+                  <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: 16 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <Coffee size={16} color="#059669" />
+                      <h4 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#0f172a' }}>
+                        {isPomodoroSinhala ? 'කෙටි විවේකයක්' : 'Short Break'}
+                      </h4>
+                    </div>
+                    <p style={{ margin: 0, fontSize: 13, color: '#64748b' }}>
+                      {isPomodoroSinhala ? 'පාඩම් කරන එක නවත්වන්න! නැගිටලා වතුර ටිකක් බොන්න, ඇඟ ස්ට්‍රෙච් කරන්න, නැත්නම් සින්දුවක් අහන්න. ඊළඟ කොටසට කලින් මොළයට පොඩි විවේකයක් දෙන්න.' : 'Stop studying! Stand up, stretch, drink water, or listen to one song. Give your brain a quick rest before the next session.'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Repeat */}
+                <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                  <div style={{
+                    background: '#eff6ff', color: '#2563eb', fontWeight: 700, fontSize: 13,
+                    padding: '6px 12px', borderRadius: 20, width: 100, textAlign: 'center', flexShrink: 0
+                  }}>
+                    {isPomodoroSinhala ? 'නැවත කිරීම' : 'Repeat'}
+                  </div>
+                  <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: 16 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <Calendar size={16} color="#2563eb" />
+                      <h4 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#0f172a' }}>
+                        {isPomodoroSinhala ? 'වාර 4කට පසු දිගු විවේකයක්' : 'Do 4 Cycles, then Long Break'}
+                      </h4>
+                    </div>
+                    <p style={{ margin: 0, fontSize: 13, color: '#64748b' }}>
+                      {isPomodoroSinhala ? 'මේ විදිහට වාර 4ක් කළාට පස්සේ (පැය 2ක පාඩම් කිරීමෙන් පසු), විනාඩි 20-30ක දිගු විවේකයක් ගන්න. ඊළඟට ඉතිහාසය, සිංහල වගේ වෙනත් විෂයකට මාරු වෙන්න.' : 'After completing 4 Pomodoros (2 hours of total study time), take a longer 20-30 minute break. Switch to another subject like History or Sinhala/Tamil for the next block.'}
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+
+              <div style={{
+                marginTop: 24, padding: 16, background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 12,
+                display: 'flex', gap: 12, alignItems: 'center'
+              }}>
+                <div style={{ background: '#d97706', color: 'white', padding: 6, borderRadius: 50, display: 'flex' }}>
+                  <Lightbulb size={16} />
+                </div>
+                <div>
+                  <h5 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#92400e' }}>
+                    {isPomodoroSinhala ? 'O/L විභාගය සඳහා Tip එකක්' : 'Sri Lankan O/L Tip'}
+                  </h5>
+                  <p style={{ margin: 0, fontSize: 12, color: '#b45309', marginTop: 2 }}>
+                    {isPomodoroSinhala ? 'ඔයාගේ විනාඩි 25ක කාලය ඇතුළත Past Paper එකක එක කොටසක් ඉවර කරන්න උත්සාහ කරන්න. මේකෙන් විභාගයේදී ඔයාගේ වේගය ගොඩක් වැඩි වෙනවා!' : 'Use your 25-minute slots to do just one section of a Past Paper. It builds exam speed!'}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }
