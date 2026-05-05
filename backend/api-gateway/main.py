@@ -1,7 +1,7 @@
 """
-API Gateway - Main Entry Point (Port 5000)
-Routes requests to 4 microservices:
-- Adaptive Learning: port 5001
+API Gateway - Main Entry Point (Port 3000)
+Routes requests to 3 microservices:
+- Adaptive Learning: port 5004
 - Risk Predictor: port 5002
 - Stress Prediction: port 5003
 - Attendance Analyzer: port 5004

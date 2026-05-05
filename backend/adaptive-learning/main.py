@@ -29,6 +29,11 @@ def generate_student_id():
     random_suffix = ''.join(random.choices(string.digits, k=4))
     return f"STU{timestamp}{random_suffix}"
 
+
+def infer_stream(subject_scores: dict) -> str:
+    """Infer the most suitable A/L stream from subject scores."""
+    return mongodb_handler.infer_stream_from_subject_scores(subject_scores)
+
 @app.on_event("startup")
 async def startup_event():
     # Resolve project root robustly: .../unified-project/backend/adaptive-learning/main.py -> .../unified-project
@@ -77,6 +82,8 @@ async def add_student(student: NewStudentInput):
             generated_id = generate_student_id()
         else:
             generated_id = student.student_id.strip().upper()
+
+        inferred_stream = infer_stream(student.subject_scores)
         
         # Convert to extended format for MongoDB
         student_data = {
@@ -84,7 +91,7 @@ async def add_student(student: NewStudentInput):
             "name": generated_id,  # Default name to student_id
             "age": 16,  # Default age
             "current_grade": 11,  # Default grade
-            "interested_stream": "Science",  # Default stream (will be improved based on scores)
+            "interested_stream": inferred_stream,
             "strengths": [],
             "weaknesses": [],
             "iq_level": student.iq_level,
@@ -101,9 +108,9 @@ async def add_student(student: NewStudentInput):
         )
         
         # Add student to MongoDB with all recommendations
-        weekly_schedule = mongodb_handler.generate_weekly_schedule(student_data['interested_stream'])
-        study_materials = mongodb_handler.recommend_study_materials(student_data['interested_stream'])
-        al_path = mongodb_handler.suggest_al_path(student_data['interested_stream'])
+        weekly_schedule = mongodb_handler.generate_weekly_schedule(inferred_stream)
+        study_materials = mongodb_handler.recommend_study_materials(inferred_stream)
+        al_path = mongodb_handler.suggest_al_path(inferred_stream)
         
         # Prepare student document with weak subject analysis
         student_doc = {
@@ -111,7 +118,7 @@ async def add_student(student: NewStudentInput):
             "name": student_data['name'],
             "age": student_data['age'],
             "current_grade": student_data['current_grade'],
-            "interested_stream": student_data['interested_stream'],
+            "interested_stream": inferred_stream,
             "strengths": student_data.get('strengths', []),
             "weaknesses": list(weak_analysis['weak_subjects'].keys()),
             "iq_level": student_data.get('iq_level', 0),
@@ -146,6 +153,7 @@ async def add_student(student: NewStudentInput):
             "subject_scores": student.subject_scores
         }
         analysis_result = analysis.add_new_student(basic_student_data)
+        learning_path = analysis.generate_complete_learning_path(generated_id)
         
         return {
             "success": True,
@@ -157,7 +165,9 @@ async def add_student(student: NewStudentInput):
             "weak_subjects": weak_analysis['weak_subjects'],
             "weak_subjects_count": weak_analysis['weak_subjects_count'],
             "recommendations": weak_analysis['recommendations'],
-            "overall_advice": weak_analysis['overall_advice']
+            "overall_advice": weak_analysis['overall_advice'],
+            "online_resources": learning_path.get('online_resources', []),
+            "learning_path": learning_path
         }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -199,6 +209,11 @@ async def get_student_from_mongodb(student_id: str):
         student = mongodb_handler.get_student_by_id(student_id)
         if not student:
             raise HTTPException(status_code=404, detail="Student not found in MongoDB")
+
+        try:
+            learning_path = analysis.generate_complete_learning_path(student_id)
+        except Exception:
+            learning_path = {}
         
         # Convert to response model
         return StudentFullProfile(
@@ -218,6 +233,7 @@ async def get_student_from_mongodb(student_id: str):
             },
             weekly_schedule=student['weekly_schedule'],
             recommended_materials=student['recommended_materials'],
+            online_resources=learning_path.get('online_resources', student.get('online_resources', [])),
             al_path=student['al_path'],
             created_at=student['created_at']
         )

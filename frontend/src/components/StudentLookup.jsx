@@ -14,13 +14,7 @@ const StudentLookup = () => {
     const [error, setError] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Load all students from MongoDB on mount
-    useEffect(() => {
-        fetchAllStudents();
-    }, []);
-
     const fetchAllStudents = async () => {
-        setLoadingAll(true);
         try {
             const response = await client.get('/api/adaptive/students/mongodb/all/list');
             setAllStudents(response.data.students || []);
@@ -31,6 +25,15 @@ const StudentLookup = () => {
             setLoadingAll(false);
         }
     };
+
+    // Load all students from MongoDB on mount
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            void fetchAllStudents();
+        }, 0);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     const handleViewStudent = async (studentId) => {
         setLoading(true);
@@ -71,12 +74,6 @@ const StudentLookup = () => {
         if (score >= 75) return 'text-emerald-600 bg-emerald-50';
         if (score >= 50) return 'text-amber-600 bg-amber-50';
         return 'text-red-600 bg-red-50';
-    };
-
-    const getScoreBarColor = (score) => {
-        if (score >= 75) return 'from-emerald-400 to-emerald-600';
-        if (score >= 50) return 'from-amber-400 to-amber-600';
-        return 'from-red-400 to-red-600';
     };
 
     return (
@@ -203,6 +200,54 @@ const StudentLookup = () => {
                                                 </div>
                                                 <p className="text-xs text-slate-400">{day.duration}</p>
                                             </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Online Resources */}
+                        {selectedStudent.online_resources && selectedStudent.online_resources.length > 0 && (
+                            <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+                                <div className="bg-gradient-to-r from-violet-600 to-fuchsia-600 p-5">
+                                    <div className="flex items-center gap-3 text-white">
+                                        <BookOpen className="w-6 h-6" />
+                                        <h3 className="text-lg font-bold">Personalized Resources</h3>
+                                    </div>
+                                </div>
+                                <div className="p-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {selectedStudent.online_resources.map((resource, i) => (
+                                            <a
+                                                key={i}
+                                                href={resource.url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="group block rounded-2xl border border-slate-200 bg-slate-50 p-4 hover:shadow-lg hover:border-violet-300 transition-all"
+                                            >
+                                                <div className="flex items-start justify-between gap-3 mb-3">
+                                                    <div>
+                                                        <p className="text-xs font-bold uppercase tracking-wider text-violet-600 mb-1">
+                                                            {resource.subject} • {resource.platform}
+                                                        </p>
+                                                        <h4 className="font-bold text-slate-800 group-hover:text-violet-700 transition-colors">
+                                                            {resource.title}
+                                                        </h4>
+                                                    </div>
+                                                    <span className="px-2 py-1 rounded-full text-[10px] font-bold bg-white border border-slate-200 text-slate-500">
+                                                        {resource.level}
+                                                    </span>
+                                                </div>
+                                                <p className="text-sm text-slate-600 mb-3">{resource.topics}</p>
+                                                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                                                    <span className="px-2 py-1 rounded-full bg-white border border-slate-200">{resource.type}</span>
+                                                    <span className="px-2 py-1 rounded-full bg-white border border-slate-200">{resource.duration}</span>
+                                                    <span className="px-2 py-1 rounded-full bg-white border border-slate-200">Rating {resource.rating}</span>
+                                                    {String(resource.platform || '').toLowerCase().includes('youtube') && (
+                                                        <span className="px-2 py-1 rounded-full bg-red-50 text-red-600 border border-red-200 font-bold">YouTube</span>
+                                                    )}
+                                                </div>
+                                            </a>
                                         ))}
                                     </div>
                                 </div>

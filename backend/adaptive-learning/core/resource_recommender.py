@@ -22,8 +22,8 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Paths — go up: core/ → backend/ → StudentMonitoringSystem/
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Paths — go up: core/ → adaptive-learning/ → backend/ → project root
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 RESOURCES_CSV = os.path.join(BASE_DIR, 'data', 'ol_resources.csv')
 MODEL_PKL = os.path.join(BASE_DIR, 'data', 'resource_model.pkl')
 
