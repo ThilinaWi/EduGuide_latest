@@ -519,7 +519,7 @@ def add_new_student(student_data: Dict[str, Any]) -> Dict[str, Any]:
     if student_id in df_performance['student_id'].values:
         raise ValueError(f"Student {student_id} already exists")
     
-    # Get CSV file path at project root: .../unified-project/data/...
+    # Get CSV file path
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_dir)))
     csv_path = os.path.join(project_root, "data", "academic_performance_1000_students_with_iq_study_hours.csv")
