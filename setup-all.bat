@@ -16,7 +16,7 @@ REM ============================================================================
 REM 1. SETUP API GATEWAY
 REM ============================================================================
 echo.
-echo [1/8] Setting up API Gateway (port 3000)...
+echo [1/8] Setting up API Gateway (port 5000)...
 cd /d "backend\api-gateway"
 
 if not exist ".venv" (

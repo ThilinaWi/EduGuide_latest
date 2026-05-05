@@ -7,7 +7,7 @@ RUN npm ci
 
 COPY . .
 
-ENV VITE_API_GATEWAY_URL=http://localhost:3000
+ENV VITE_API_GATEWAY_URL=http://localhost:5000
 
 EXPOSE 5173
 

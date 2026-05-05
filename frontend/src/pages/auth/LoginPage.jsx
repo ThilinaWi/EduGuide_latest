@@ -34,7 +34,7 @@ export default function LoginPage() {
             saveAuth(data);
             redirect(data.user.role);
         } catch (err) {
-            setError(err.response?.data?.error || 'Login failed. Please try again.');
+            setError(err.response?.data?.detail || err.response?.data?.error || 'Login failed. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -48,7 +48,7 @@ export default function LoginPage() {
             saveAuth(data);
             redirect(data.user.role);
         } catch (err) {
-            setError(err.response?.data?.error || 'Google sign-in failed.');
+            setError(err.response?.data?.detail || err.response?.data?.error || 'Google sign-in failed.');
         } finally {
             setLoading(false);
         }

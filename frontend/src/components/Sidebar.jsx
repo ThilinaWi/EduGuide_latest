@@ -29,7 +29,6 @@ const Sidebar = () => {
         { name: 'Learning Path', icon: <Home size={20} />, path: '/add-student' },
         { name: 'Risk Predictor', icon: <Target size={20} />, path: '/risk-predictor' },
         { name: 'Stress Prediction', icon: <Activity size={20} />, path: '/stress' },
-        { name: 'Attendance Analyze', icon: <CalendarCheck size={20} />, path: '/attendance-analyze' },
         { name: 'IQ Assessment', icon: <BrainCircuit size={20} />, path: '/iq-test' },
       ];
 
@@ -61,6 +60,60 @@ const Sidebar = () => {
             <span className="font-medium text-sm">{item.name}</span>
           </NavLink>
         ))}
+
+        <div className="mt-4">
+          <p className="px-4 text-xs font-semibold tracking-widest uppercase text-emerald-300/80">Attendance Analyze</p>
+          <div className="mt-2 space-y-1">
+            {role !== 'teacher' && (
+              <>
+                <NavLink
+                  to="/attendance/anomalies"
+                  className={({ isActive }) => `
+                    flex items-center gap-3 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200
+                    ${isActive
+                      ? 'bg-emerald-500/20 text-emerald-100 border border-emerald-500/40'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'}
+                  `}
+                >
+                  Anomaly Report
+                </NavLink>
+                <NavLink
+                  to="/attendance/trends"
+                  className={({ isActive }) => `
+                    flex items-center gap-3 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200
+                    ${isActive
+                      ? 'bg-emerald-500/20 text-emerald-100 border border-emerald-500/40'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'}
+                  `}
+                >
+                  Trends & Analytics
+                </NavLink>
+                <NavLink
+                  to="/attendance/forecast"
+                  className={({ isActive }) => `
+                    flex items-center gap-3 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200
+                    ${isActive
+                      ? 'bg-emerald-500/20 text-emerald-100 border border-emerald-500/40'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'}
+                  `}
+                >
+                  AI Forecasting
+                </NavLink>
+              </>
+            )}
+            <NavLink
+              to="/attendance/context"
+              className={({ isActive }) => `
+                flex items-center gap-3 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200
+                ${isActive
+                  ? 'bg-emerald-500/20 text-emerald-100 border border-emerald-500/40'
+                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'}
+              `}
+            >
+              Contextual Impact
+            </NavLink>
+          </div>
+        </div>
       </nav>
 
       <div className="px-4 py-6 border-t border-slate-800 space-y-1">

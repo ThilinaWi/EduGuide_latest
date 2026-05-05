@@ -1,10 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import StudentProfile from './components/StudentProfile';
 import AddStudent from './components/AddStudent';
 import AdaptivePath from './components/AdaptivePath';
-import AttendanceAnalyze from './components/AttendanceAnalyze';
+import AttendanceApp from './attendance/AttendanceApp';
 import IQScoreTest from './components/IQScoreTest';
 import StudentLookup from './components/StudentLookup';
 import RiskPredictorPage from './pages/RiskPredictorPage';
@@ -27,7 +27,9 @@ function AppRoutes() {
         <Route path="/add-student" element={<AddStudent />} />
         <Route path="/students/:id" element={<StudentProfile />} />
         <Route path="/adaptive-path" element={<AdaptivePath />} />
-        <Route path="/attendance-analyze" element={<AttendanceAnalyze />} />
+        <Route path="/attendance" element={<AttendanceApp />} />
+        <Route path="/attendance/*" element={<AttendanceApp />} />
+        <Route path="/attendance-analyze" element={<Navigate to="/attendance" replace />} />
         <Route path="/iq-test" element={<IQScoreTest />} />
         <Route path="/student-records" element={<StudentLookup />} />
 

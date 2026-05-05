@@ -1,14 +1,15 @@
 """
-API Gateway - Main Entry Point (Port 3000)
-Routes requests to 3 microservices:
+API Gateway - Main Entry Point (Port 5000)
+Routes requests to 4 microservices:
 - Adaptive Learning: port 5001
 - Risk Predictor: port 5002
 - Stress Prediction: port 5003
+- Attendance Analyzer: port 5004
 """
 
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 import httpx
 import os
 from dotenv import load_dotenv
@@ -34,11 +35,13 @@ app.add_middleware(
 ADAPTIVE_LEARNING_URL = os.getenv("ADAPTIVE_LEARNING_URL", "http://localhost:5001")
 RISK_PREDICTOR_URL = os.getenv("RISK_PREDICTOR_URL", "http://localhost:5002")
 STRESS_PREDICTION_URL = os.getenv("STRESS_PREDICTION_URL", "http://localhost:5003")
+ATTENDANCE_ANALYZER_URL = os.getenv("ATTENDANCE_ANALYZER_URL", "http://localhost:5004")
 
 SERVICE_ROUTES = {
     "adaptive": ADAPTIVE_LEARNING_URL,
     "risk": RISK_PREDICTOR_URL,
     "stress": STRESS_PREDICTION_URL,
+    "attendance": ATTENDANCE_ANALYZER_URL,
 }
 
 @app.get("/")
@@ -49,6 +52,7 @@ async def root():
             "adaptive-learning": "/api/adaptive",
             "risk-predictor": "/api/risk",
             "stress-prediction": "/api/stress",
+            "attendance-analyzer": "/api/attendance",
         },
         "health": "/health",
     }
@@ -90,6 +94,11 @@ async def risk_predictor_proxy(request: Request, path: str):
 async def stress_prediction_proxy(request: Request, path: str):
     return await proxy_request(request, STRESS_PREDICTION_URL, path)
 
+# ─── Attendance Analyzer Service ───
+@app.api_route("/api/attendance/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+async def attendance_analyzer_proxy(request: Request, path: str):
+    return await proxy_request(request, ATTENDANCE_ANALYZER_URL, path)
+
 async def proxy_request(request: Request, service_url: str, path: str):
     """Forward request to microservice and return response"""
     try:
@@ -113,11 +122,17 @@ async def proxy_request(request: Request, service_url: str, path: str):
                         if key.lower() not in ["host", "content-length"]},
             )
         
-        # Return response
-        return JSONResponse(
-            content=response.json() if response.headers.get("content-type") == "application/json" else response.text,
+        content_type = response.headers.get("content-type", "")
+        if content_type.startswith("application/json"):
+            return JSONResponse(
+                content=response.json(),
+                status_code=response.status_code,
+            )
+
+        return Response(
+            content=response.content,
             status_code=response.status_code,
-            headers=dict(response.headers)
+            media_type=content_type or None,
         )
     except httpx.ConnectError:
         raise HTTPException(status_code=503, detail=f"Service unavailable at {service_url}")
@@ -126,4 +141,4 @@ async def proxy_request(request: Request, service_url: str, path: str):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=3000)
+    uvicorn.run(app, host="0.0.0.0", port=5000)

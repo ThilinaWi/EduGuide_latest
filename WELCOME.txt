@@ -16,7 +16,7 @@
 
    Frontend (5173)
        ↓
-   API Gateway (3000)
+   API Gateway (5000)
        ↓
    ┌────┴────┬──────────┬──────────┐
    ↓         ↓          ↓          ↓
@@ -28,7 +28,7 @@
 📦 WHAT'S INCLUDED
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-   ✅ 1 API Gateway              (Port 3000)
+   ✅ 1 API Gateway              (Port 5000)
    ✅ 3 Independent Backends     (Ports 5001, 5002, 5003)
    ✅ 1 Unified Frontend         (Port 5173)
    ✅ Consolidated Data Folder   (All datasets)
@@ -69,8 +69,8 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
    Application    → http://localhost:5173
-   API Gateway    → http://localhost:3000
-   Health Check   → http://localhost:3000/health
+   API Gateway    → http://localhost:5000
+   Health Check   → http://localhost:5000/health
 
 
 📚 DOCUMENTATION
@@ -88,7 +88,7 @@
 
    unified-project/
    ├── backend/
-   │   ├── api-gateway/              ← NEW! Main entry point (3000)
+   │   ├── api-gateway/              ← NEW! Main entry point (5000)
    │   ├── adaptive-learning/        ← Migrated (5001)
    │   ├── risk-predictor/           ← Migrated (5002)
    │   └── stress-prediction/        ← Migrated (5003)
@@ -120,7 +120,7 @@
    Service                    Technology    Port    Status
    ───────────────────────────────────────────────────────
    Frontend                   React + Vite   5173   ✅ Running
-   API Gateway                FastAPI        3000   ✅ Tested
+   API Gateway                FastAPI        5000   ✅ Tested
    Adaptive Learning Backend  FastAPI        5001   ✅ Running
    Risk Predictor Backend     Flask          5002   ✅ Running
    Stress Prediction Backend  Flask          5003   ✅ Running

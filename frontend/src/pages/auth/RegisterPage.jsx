@@ -50,7 +50,7 @@ export default function RegisterPage() {
                 navigate(data.user.role === 'teacher' ? '/teacher/dashboard' : '/add-student', { replace: true });
             }, 1200);
         } catch (err) {
-            setError(err.response?.data?.error || 'Registration failed. Please try again.');
+            setError(err.response?.data?.detail || err.response?.data?.error || 'Registration failed. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -59,39 +59,39 @@ export default function RegisterPage() {
     return (
         <div className="min-h-screen" style={{ background: C.mintLight }}>
             <PublicNavbar showLinks={false} />
-            <div className="min-h-screen flex items-center justify-center px-4 py-10 pt-24 pb-24 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-40 blur-3xl pointer-events-none"
+            <div className="relative flex items-center justify-center min-h-screen px-4 py-10 pt-24 pb-24 overflow-hidden">
+                <div className="absolute top-0 right-0 rounded-full pointer-events-none w-96 h-96 opacity-40 blur-3xl"
                     style={{ background: C.mint }} />
-                <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full opacity-30 blur-3xl pointer-events-none"
+                <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full pointer-events-none opacity-30 blur-3xl"
                     style={{ background: C.mint }} />
 
-                <div className="w-full max-w-md relative z-10">
+                <div className="relative z-10 w-full max-w-md">
                     <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md"
+                        <div className="flex items-center justify-center w-10 h-10 shadow-md rounded-xl"
                             style={{ background: C.navy }}>
                             <BookOpen size={18} style={{ color: C.mint }} />
                         </div>
-                        <span className="font-black text-xl" style={{ color: C.navy }}>EduGuide</span>
+                        <span className="text-xl font-black" style={{ color: C.navy }}>EduGuide</span>
                     </Link>
 
-                    <div className="rounded-3xl p-8 border-2 shadow-xl"
+                    <div className="p-8 border-2 shadow-xl rounded-3xl"
                         style={{ background: C.white, borderColor: C.mint }}>
                         {success ? (
-                            <div className="text-center py-6">
-                                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border-2"
+                            <div className="py-6 text-center">
+                                <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 border-2 rounded-full"
                                     style={{ background: `${C.mint}33`, borderColor: C.mint }}>
                                     <CheckCircle size={32} style={{ color: C.navy }} />
                                 </div>
-                                <h2 className="text-xl font-black mb-2" style={{ color: C.navy }}>Account created!</h2>
+                                <h2 className="mb-2 text-xl font-black" style={{ color: C.navy }}>Account created!</h2>
                                 <p className="text-sm" style={{ color: '#4a6572' }}>Redirecting to your dashboard...</p>
                             </div>
                         ) : (
                             <>
-                                <h1 className="text-2xl font-black mb-1" style={{ color: C.navy }}>Create account</h1>
+                                <h1 className="mb-1 text-2xl font-black" style={{ color: C.navy }}>Create account</h1>
                                 <p className="text-sm mb-7" style={{ color: '#4a6572' }}>Join EduGuide and start your journey</p>
 
                                 {error && (
-                                    <div className="flex items-center gap-2 text-sm rounded-xl px-4 py-3 mb-5 border"
+                                    <div className="flex items-center gap-2 px-4 py-3 mb-5 text-sm border rounded-xl"
                                         style={{ color: '#b91c1c', background: '#fee2e2', borderColor: '#fca5a5' }}>
                                         <AlertCircle size={15} className="shrink-0" /> {error}
                                     </div>
@@ -109,7 +109,7 @@ export default function RegisterPage() {
                                                 value={form.name}
                                                 onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
                                                 placeholder="Kavindu Perera"
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition"
+                                                className="w-full py-3 pl-10 pr-4 text-sm transition outline-none rounded-xl"
                                                 style={{ background: C.mintLight, border: `1.5px solid ${C.mint}`, color: C.navy }}
                                             />
                                         </div>
@@ -126,7 +126,7 @@ export default function RegisterPage() {
                                                 value={form.email}
                                                 onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
                                                 placeholder="you@example.com"
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition"
+                                                className="w-full py-3 pl-10 pr-4 text-sm transition outline-none rounded-xl"
                                                 style={{ background: C.mintLight, border: `1.5px solid ${C.mint}`, color: C.navy }}
                                             />
                                         </div>
@@ -143,7 +143,7 @@ export default function RegisterPage() {
                                                 value={form.password}
                                                 onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
                                                 placeholder="Min. 6 characters"
-                                                className="w-full pl-10 pr-10 py-3 rounded-xl text-sm outline-none transition"
+                                                className="w-full py-3 pl-10 pr-10 text-sm transition outline-none rounded-xl"
                                                 style={{ background: C.mintLight, border: `1.5px solid ${C.mint}`, color: C.navy }}
                                             />
                                             <button type="button" tabIndex={-1}
@@ -154,10 +154,10 @@ export default function RegisterPage() {
                                             </button>
                                         </div>
                                         {strength && (
-                                            <div className="mt-2 flex items-center gap-2">
-                                                <div className="flex gap-1 flex-1">
+                                            <div className="flex items-center gap-2 mt-2">
+                                                <div className="flex flex-1 gap-1">
                                                     {[1, 2, 3, 4].map(n => (
-                                                        <div key={n} className="flex-1 h-1 rounded-full transition-all"
+                                                        <div key={n} className="flex-1 h-1 transition-all rounded-full"
                                                             style={{ background: n <= strength.level ? strength.color : `${C.mint}66` }} />
                                                     ))}
                                                 </div>
@@ -174,7 +174,7 @@ export default function RegisterPage() {
                                     </button>
                                 </form>
 
-                                <p className="text-center text-sm mt-6" style={{ color: '#4a6572' }}>
+                                <p className="mt-6 text-sm text-center" style={{ color: '#4a6572' }}>
                                     Already have an account?{' '}
                                     <Link to="/login" className="font-semibold transition-opacity hover:opacity-70"
                                         style={{ color: C.navy }}>Sign in</Link>

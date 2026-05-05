@@ -12,7 +12,7 @@ A consolidated educational platform combining four components: Adaptive Learning
                              │
                              ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    API Gateway (Port 3000)                       │
+│                    API Gateway (Port 5000)                       │
 │                      Request Router/Proxy                        │
 └─┬─────────────────────────┬──────────────────────┬──────────────┘
   │                         │                      │
@@ -24,6 +24,16 @@ A consolidated educational platform combining four components: Adaptive Learning
 │ Port: 5001       │  │ Port: 5002       │  │ Port: 5003       │
 └──────────────────┘  └──────────────────┘  └──────────────────┘
 
+┌─────────────────────────────────────────────────────────────────┐
+│                 Attendance Analyzer (Port 5004)                  │
+│                         Flask + MongoDB                          │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                    Auth Service (Port 5050)                      │
+│                         FastAPI + JWT                            │
+└─────────────────────────────────────────────────────────────────┘
+
 Attendance Trends (separate stack)
   - Backend API: http://localhost:5004
   - ML Service:  http://localhost:8000
@@ -32,7 +42,7 @@ Attendance Trends (separate stack)
 
 ## Services
 
-### 1. API Gateway (Port 3000)
+### 1. API Gateway (Port 5000)
 - Central entry point for all requests
 - Routes requests to appropriate microservices
 - Handles CORS, error handling, and load balancing
@@ -62,58 +72,36 @@ Attendance Trends (separate stack)
 - Adaptive UI based on student profiles
 - **Tech**: React + Vite + Tailwind CSS
 
-### 6. Attendance Trends Backend (Port 5004)
+### 6. Attendance Analyzer (Port 5004)
 - Attendance analytics and anomaly detection
-- Uses MongoDB and a separate ML service
-- **Tech**: Node.js + Express + Mongoose
+- Uses MongoDB for storage
+- **Tech**: Flask + PyMongo
 
-### 7. Attendance Trends ML Service (Port 8000)
-- LSTM and ARIMA forecasting endpoints
-- **Tech**: Python + Flask
-
-### 8. Attendance Trends Frontend (Port 5174)
-- Attendance analytics dashboard
-- **Tech**: React + Vite + Tailwind CSS
+### 7. Auth Service (Port 5050)
+- Email/password + Google OAuth
+- JWT-based auth and role enforcement
+- **Tech**: FastAPI + PyJWT
 
 ## Quick Start
 
 ### Windows (Recommended)
 ```batch
-cd unified-project
+cd EduGuide_latest
 setup-all.bat
 start-all-services.bat
 ```
 
 Open the UI at http://localhost:5173
-Attendance UI: http://localhost:5174
+Auth API: http://localhost:5050
 
-### Option 1: Run All Services (Windows)
-```batch
-cd unified-project
-start-all-services.bat
-```
-
-### Option 2: Run All Services (Linux/Mac)
-```bash
-cd unified-project
-chmod +x start-all-services.sh
-./start-all-services.sh
-```
-
-### Option 3: Use Docker Compose
-```bash
-cd unified-project
-docker-compose up --build
-```
-
-### Option 4: Run Individual Services
+### Run Individual Services (Windows)
 
 #### API Gateway
 ```bash
 cd backend/api-gateway
 pip install -r requirements.txt
 python main.py
-# Runs on http://localhost:3000
+# Runs on http://localhost:5000
 ```
 
 #### Adaptive Learning Backend
@@ -140,6 +128,22 @@ python app.py
 # Runs on http://localhost:5003
 ```
 
+#### Attendance Analyzer
+```bash
+cd backend/attendance-analyzer
+pip install -r requirements.txt
+python app.py
+# Runs on http://localhost:5004
+```
+
+#### Auth Service
+```bash
+cd backend/auth-service
+pip install -r requirements.txt
+python main.py
+# Runs on http://localhost:5050
+```
+
 #### Frontend
 ```bash
 cd frontend
@@ -148,33 +152,9 @@ npm run dev
 # Runs on http://localhost:5173
 ```
 
-#### Attendance Trends Backend
-```bash
-cd attendance-trends
-npm install
-npm run dev
-# Runs on http://localhost:5004
-```
-
-#### Attendance Trends ML Service
-```bash
-cd attendance-trends/ml_service
-pip install -r requirements.txt
-python app.py
-# Runs on http://localhost:8000
-```
-
-#### Attendance Trends Frontend
-```bash
-cd attendance-trends/frontend
-npm install
-npm run dev
-# Runs on http://localhost:5174
-```
-
 ## API Endpoints
 
-All endpoints are accessible through the API Gateway at `http://localhost:3000`
+All endpoints are accessible through the API Gateway at `http://localhost:5000`
 
 ### Adaptive Learning API
 - `GET /api/adaptive/students` - Get all students
@@ -199,6 +179,7 @@ All endpoints are accessible through the API Gateway at `http://localhost:3000`
 ADAPTIVE_LEARNING_URL=http://localhost:5001
 RISK_PREDICTOR_URL=http://localhost:5002
 STRESS_PREDICTION_URL=http://localhost:5003
+ATTENDANCE_ANALYZER_URL=http://localhost:5004
 ```
 
 ### Adaptive Learning (.env)
@@ -221,14 +202,24 @@ PORT=5003
 
 ### Frontend (.env)
 ```
-VITE_API_GATEWAY_URL=http://localhost:3000
+VITE_API_GATEWAY_URL=http://localhost:5000
+VITE_GOOGLE_CLIENT_ID=your_google_client_id
 ```
 
-### Attendance Trends Backend (.env)
+### Attendance Analyzer (.env)
 ```
 PORT=5004
 MONGO_URI=mongodb://127.0.0.1:27017/student_attendance
-ML_SERVICE_URL=http://localhost:8000
+DB_NAME=student_attendance
+```
+
+### Auth Service (.env)
+```
+GOOGLE_CLIENT_ID=your_google_client_id
+JWT_SECRET=change-me
+JWT_EXP_MINUTES=120
+TEACHER_EMAILS=teacher1@example.com,teacher2@example.com
+MONGODB_URI=
 ```
 
 ## Database Configuration
@@ -248,7 +239,7 @@ mongodb+srv://username:password@cluster.mongodb.net/database_name?retryWrites=tr
 
 Check the status of all services:
 ```bash
-curl http://localhost:3000/health
+curl http://localhost:5000/health
 ```
 
 Response:
@@ -265,6 +256,10 @@ Response:
   "stress": {
     "status": "UP",
     "url": "http://localhost:5003"
+  },
+  "attendance": {
+    "status": "UP",
+    "url": "http://localhost:5004"
   }
 }
 ```
@@ -272,9 +267,9 @@ Response:
 ## File Structure
 
 ```
-unified-project/
+EduGuide_latest/
 ├── backend/
-│   ├── api-gateway/          # Main entry point (port 3000)
+│   ├── api-gateway/          # Main entry point (port 5000)
 │   │   ├── main.py
 │   │   ├── requirements.txt
 │   │   ├── .env
@@ -286,6 +281,17 @@ unified-project/
 │   │   ├── models/
 │   │   ├── .env
 │   │   └── Dockerfile
+│   ├── attendance-analyzer/  # Attendance analytics (port 5004)
+│   │   ├── app.py
+│   │   ├── requirements.txt
+│   │   ├── data/
+│   │   ├── .env
+│   │   └── seed.py
+│   ├── auth-service/         # Auth API (port 5050)
+│   │   ├── main.py
+│   │   ├── requirements.txt
+│   │   ├── users.json
+│   │   └── .env
 │   ├── risk-predictor/       # Risk prediction (port 5002)
 │   │   ├── app.py
 │   │   ├── requirements.txt
@@ -309,9 +315,7 @@ unified-project/
 ├── data/                     # Consolidated data
 │   ├── *.csv
 │   └── *.pkl
-├── docker-compose.yml        # Docker orchestration
 ├── start-all-services.bat    # Windows startup script
-├── start-all-services.sh     # Unix startup script
 └── README.md                 # This file
 ```
 
@@ -320,7 +324,7 @@ unified-project/
 ### Frontend → API Gateway
 ```javascript
 // src/api/client.js
-baseURL: 'http://localhost:3000'
+baseURL: 'http://localhost:5000'
 ```
 
 ### API Gateway → Individual Services
@@ -329,27 +333,26 @@ baseURL: 'http://localhost:3000'
 ADAPTIVE_LEARNING_URL = 'http://localhost:5001'
 RISK_PREDICTOR_URL = 'http://localhost:5002'
 STRESS_PREDICTION_URL = 'http://localhost:5003'
+ATTENDANCE_ANALYZER_URL = 'http://localhost:5004'
+```
+
+### Frontend → Auth Service
+```javascript
+// src/api/authApi.js
+baseURL: 'http://localhost:5050'
 ```
 
 ## Scaling & Deployment
 
 ### Local Development
-Use `start-all-services.bat` or Docker Compose
-
-### Production (Docker)
-```bash
-docker-compose -f docker-compose.yml up -d
-```
-
-### Kubernetes (Optional)
-Each service can be deployed as a separate pod with its own Dockerfile.
+Use `start-all-services.bat`
 
 ## Troubleshooting
 
 ### Service Not Responding
 ```bash
 # Check if service is running
-curl http://localhost:3000/health
+curl http://localhost:5000/health
 
 # Check logs
 docker logs <container_name>
@@ -359,11 +362,11 @@ docker logs <container_name>
 ```bash
 # Find and kill process using port
 # Windows
-netstat -ano | findstr :3000
+netstat -ano | findstr :5000
 taskkill /PID <PID> /F
 
 # Unix
-lsof -i :3000
+lsof -i :5000
 kill -9 <PID>
 ```
 
