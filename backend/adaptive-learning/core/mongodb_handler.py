@@ -298,6 +298,23 @@ class MongoDBHandler:
         }
         
         return paths.get(stream, paths["Science"])
+
+    def infer_stream_from_subject_scores(self, subject_scores: Dict[str, float], fallback: str = "Science") -> str:
+        """Infer the most suitable A/L stream from O/L subject scores."""
+        if not subject_scores:
+            return fallback
+
+        score = lambda subject: float(subject_scores.get(subject, 0) or 0)
+
+        stream_scores = {
+            "Science": (score("Mathematics") + score("Science") + score("English")) / 3,
+            "Commerce": (score("Mathematics") + score("English") + score("History")) / 3,
+            "Arts": (score("Sinhala") + score("English") + score("History") + score("Geography")) / 4,
+            "Technology": (score("Mathematics") + score("Science") + score("ICT")) / 3,
+        }
+
+        best_stream = max(stream_scores.items(), key=lambda item: item[1])[0]
+        return best_stream or fallback
     
     def identify_weak_subjects_and_recommend(self, subject_scores: Dict[str, float], threshold: float = 60) -> Dict[str, Any]:
         """Identify weak subjects and recommend specific materials"""
@@ -410,11 +427,18 @@ class MongoDBHandler:
     
     def add_student_with_recommendations(self, student_data: Dict[str, Any]) -> Dict[str, Any]:
         """Add new student to MongoDB with all recommendations"""
+
+        inferred_stream = student_data.get("interested_stream") or self.infer_stream_from_subject_scores(
+            student_data.get("subject_scores", {})
+        )
+        if inferred_stream == "Science" and not student_data.get("interested_stream"):
+            # Keep Science only when it is actually the strongest fit or no better evidence exists.
+            inferred_stream = self.infer_stream_from_subject_scores(student_data.get("subject_scores", {}), fallback="Science")
         
         # Generate recommendations
-        weekly_schedule = self.generate_weekly_schedule(student_data['interested_stream'])
-        study_materials = self.recommend_study_materials(student_data['interested_stream'])
-        al_path = self.suggest_al_path(student_data['interested_stream'])
+        weekly_schedule = self.generate_weekly_schedule(inferred_stream)
+        study_materials = self.recommend_study_materials(inferred_stream)
+        al_path = self.suggest_al_path(inferred_stream)
         
         # Prepare student document
         student_doc = {
@@ -422,7 +446,7 @@ class MongoDBHandler:
             "name": student_data['name'],
             "age": student_data['age'],
             "current_grade": student_data['current_grade'],
-            "interested_stream": student_data['interested_stream'],
+            "interested_stream": inferred_stream,
             "strengths": student_data.get('strengths', []),
             "weaknesses": student_data.get('weaknesses', []),
             "iq_level": student_data.get('iq_level', 0),

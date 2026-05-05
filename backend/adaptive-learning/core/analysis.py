@@ -212,7 +212,16 @@ def recommend_online_resources(student_id, top_n=5):
     weak_subjects = list(weak_areas['weak_subjects'].keys())
 
     if not weak_subjects:
-        return []
+        al_recommendations, _, _ = recommend_al_stream(student_id)
+        top_stream = al_recommendations[0]['stream'] if al_recommendations else 'Science'
+        stream_fallback_subjects = {
+            'Combined Maths': ['Mathematics', 'Science', 'English'],
+            'Bio Science': ['Science', 'Mathematics', 'English'],
+            'Technology': ['Mathematics', 'Science', 'ICT'],
+            'Commerce': ['Mathematics', 'English', 'History'],
+            'Arts': ['Sinhala', 'English', 'History']
+        }
+        weak_subjects = stream_fallback_subjects.get(top_stream, ['Mathematics', 'English', 'Science'])
 
     student_data = df_performance[df_performance['student_id'] == student_id]
     row = student_data.iloc[0]
@@ -260,7 +269,7 @@ def recommend_online_resources(student_id, top_n=5):
         subject_weak_topics[subj].append(topic)
 
     for subject in weak_subjects[:3]:
-        subject_score = weak_areas['weak_subjects'][subject]
+        subject_score = weak_areas['weak_subjects'].get(subject, 60)
 
         # --- Priority based on subject score ---
         if subject_score < 40:
@@ -277,7 +286,6 @@ def recommend_online_resources(student_id, top_n=5):
         ml_resources = resource_recommender.recommend_with_model(
             subject=subject,
             level=preferred_level,
-            topics=weak_topics_for_subject,
             top_n=3
         )
 

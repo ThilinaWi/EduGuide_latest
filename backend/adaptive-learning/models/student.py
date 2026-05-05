@@ -107,6 +107,7 @@ class StudentFullProfile(BaseModel):
     current_performance: StudentPerformance
     weekly_schedule: List[WeeklyScheduleDay]
     recommended_materials: List[StudyMaterial]
+    online_resources: List[OnlineResource] = []
     al_path: ALPathSuggestion
     created_at: str
 
