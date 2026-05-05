@@ -520,9 +520,8 @@ def add_new_student(student_data: Dict[str, Any]) -> Dict[str, Any]:
         raise ValueError(f"Student {student_id} already exists")
     
     # Get CSV file path
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_dir)))
-    csv_path = os.path.join(project_root, "data", "academic_performance_1000_students_with_iq_study_hours.csv")
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    csv_path = os.path.join(base_dir, "..", "data", "academic_performance_1000_students_with_iq_study_hours.csv")
     
     # Create new rows for each subject (matching CSV structure)
     subjects = ['Sinhala', 'Mathematics', 'Science', 'English', 'History', 'Buddhism', 'Geography', 'ICT']
