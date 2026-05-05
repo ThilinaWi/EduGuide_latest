@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Activity, AlertCircle, CheckCircle, Heart } from 'lucide-react';
 import client from '../api/client';
+import Layout from './Layout';
 
 const STRESS_API_URL = import.meta.env.VITE_STRESS_API_URL || 'http://localhost:5003';
 
@@ -106,7 +107,7 @@ const StressPrediction = () => {
   };
 
   return (
-    <div className="flex-1 min-h-screen p-8 ml-64 bg-slate-50">
+    <Layout title="Stress Prediction">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -221,7 +222,7 @@ const StressPrediction = () => {
           </div>
         )}
       </div>
-    </div>
+    </Layout>
   );
 };
 

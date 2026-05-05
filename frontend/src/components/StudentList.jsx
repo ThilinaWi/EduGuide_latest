@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Search, ChevronRight, Users } from 'lucide-react';
 import Layout from './Layout';
 
-const StudentList = () => {
+const StudentList = ({ embedded = false }) => {
     const navigate = useNavigate();
     const [students, setStudents] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -43,9 +43,8 @@ const StudentList = () => {
         return { bg: 'bg-rose-50', text: 'text-rose-600' };
     };
 
-    return (
-        <Layout title="Students Directory" searchId={searchId} setSearchId={setSearchId} handleSearch={handleSearch}>
-            <div className="animate-fadeIn">
+    const content = (
+        <div className="animate-fadeIn">
                 {/* Search bar */}
                 <div className="mb-8 flex items-center gap-4">
                     <div className="relative flex-1 max-w-md">
@@ -129,7 +128,14 @@ const StudentList = () => {
                         </>
                     )}
                 </div>
-            </div>
+        </div>
+    );
+
+    if (embedded) return content;
+
+    return (
+        <Layout title="Students Directory" searchId={searchId} setSearchId={setSearchId} handleSearch={handleSearch}>
+            {content}
         </Layout>
     );
 };

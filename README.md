@@ -1,6 +1,6 @@
 # Unified Microservices Architecture
 
-A consolidated educational platform combining three microservices: Adaptive Learning Path Generator, Risk Predictor, and Stress Prediction.
+A consolidated educational platform combining four components: Adaptive Learning Path Generator, Risk Predictor, Stress Prediction, and Attendance Trends.
 
 ## Architecture Overview
 
@@ -23,6 +23,11 @@ A consolidated educational platform combining three microservices: Adaptive Lear
 │ (FastAPI)        │  │ (Flask)          │  │ (Flask)          │
 │ Port: 5001       │  │ Port: 5002       │  │ Port: 5003       │
 └──────────────────┘  └──────────────────┘  └──────────────────┘
+
+Attendance Trends (separate stack)
+  - Backend API: http://localhost:5004
+  - ML Service:  http://localhost:8000
+  - Frontend:    http://localhost:5174
 ```
 
 ## Services
@@ -57,6 +62,19 @@ A consolidated educational platform combining three microservices: Adaptive Lear
 - Adaptive UI based on student profiles
 - **Tech**: React + Vite + Tailwind CSS
 
+### 6. Attendance Trends Backend (Port 5004)
+- Attendance analytics and anomaly detection
+- Uses MongoDB and a separate ML service
+- **Tech**: Node.js + Express + Mongoose
+
+### 7. Attendance Trends ML Service (Port 8000)
+- LSTM and ARIMA forecasting endpoints
+- **Tech**: Python + Flask
+
+### 8. Attendance Trends Frontend (Port 5174)
+- Attendance analytics dashboard
+- **Tech**: React + Vite + Tailwind CSS
+
 ## Quick Start
 
 ### Windows (Recommended)
@@ -67,6 +85,7 @@ start-all-services.bat
 ```
 
 Open the UI at http://localhost:5173
+Attendance UI: http://localhost:5174
 
 ### Option 1: Run All Services (Windows)
 ```batch
@@ -129,6 +148,30 @@ npm run dev
 # Runs on http://localhost:5173
 ```
 
+#### Attendance Trends Backend
+```bash
+cd attendance-trends
+npm install
+npm run dev
+# Runs on http://localhost:5004
+```
+
+#### Attendance Trends ML Service
+```bash
+cd attendance-trends/ml_service
+pip install -r requirements.txt
+python app.py
+# Runs on http://localhost:8000
+```
+
+#### Attendance Trends Frontend
+```bash
+cd attendance-trends/frontend
+npm install
+npm run dev
+# Runs on http://localhost:5174
+```
+
 ## API Endpoints
 
 All endpoints are accessible through the API Gateway at `http://localhost:3000`
@@ -179,6 +222,13 @@ PORT=5003
 ### Frontend (.env)
 ```
 VITE_API_GATEWAY_URL=http://localhost:3000
+```
+
+### Attendance Trends Backend (.env)
+```
+PORT=5004
+MONGO_URI=mongodb://127.0.0.1:27017/student_attendance
+ML_SERVICE_URL=http://localhost:8000
 ```
 
 ## Database Configuration

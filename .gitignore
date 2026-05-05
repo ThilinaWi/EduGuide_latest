@@ -20,6 +20,9 @@ build/
 .env
 .env.*
 
+# Local auth data
+backend/auth-service/users.json
+
 # IDE
 .vscode/
 .idea/

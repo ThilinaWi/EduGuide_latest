@@ -53,42 +53,42 @@ const AdaptivePath = () => {
             setSearchId={setSearchId}
             handleSearch={handleSearch}
         >
-            <div className="animate-fadeIn max-w-6xl mx-auto">
+            <div className="max-w-6xl mx-auto animate-fadeIn">
                 {/* Hero Section */}
-                <div className="card mb-8 p-10 bg-white border-slate-100 shadow-sm relative overflow-hidden">
+                <div className="relative p-10 mb-8 overflow-hidden bg-white shadow-sm card border-slate-100">
                     <div className="flex items-center justify-between mb-8">
                         <div className="max-w-xl">
-                            <h1 className="text-3xl font-bold text-slate-800 mb-4">AI-Driven Adaptive Learning Paths</h1>
-                            <p className="text-slate-500 leading-relaxed mb-6">
+                            <h1 className="mb-4 text-3xl font-bold text-slate-800">AI-Driven Adaptive Learning Paths</h1>
+                            <p className="mb-6 leading-relaxed text-slate-500">
                                 Our adaptive engine creates personalized learning journeys by analyzing individual performance gaps, learning styles, and future career goals.
                             </p>
                             <div className="flex gap-3">
-                                <div className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full text-xs font-bold flex items-center gap-2">
+                                <div className="flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-full bg-emerald-50 text-emerald-600">
                                     <Target size={14} />
                                     Performance Based
                                 </div>
-                                <div className="px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-xs font-bold flex items-center gap-2">
+                                <div className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-blue-600 rounded-full bg-blue-50">
                                     <Shuffle size={14} />
                                     Dynamic Realignment
                                 </div>
                             </div>
                         </div>
                         <div className="hidden lg:block">
-                            <div className="w-48 h-48 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center p-8 animate-pulse">
+                            <div className="flex items-center justify-center w-48 h-48 p-8 rounded-full bg-emerald-50 text-emerald-500 animate-pulse">
                                 <Shuffle size={80} />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
                     {suggestedPaths.map((path, idx) => (
-                        <div key={idx} className="card bg-white p-8 border-slate-100 shadow-sm hover:border-emerald-200 transition-all group cursor-pointer">
+                        <div key={idx} className="p-8 transition-all bg-white shadow-sm cursor-pointer card border-slate-100 hover:border-emerald-200 group">
                             <div className={`w-12 h-12 bg-${path.color}-50 text-${path.color}-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
                                 <TrendingUp size={24} />
                             </div>
-                            <h3 className="text-lg font-bold text-slate-800 mb-3">{path.title}</h3>
-                            <p className="text-sm text-slate-500 mb-6 leading-relaxed">
+                            <h3 className="mb-3 text-lg font-bold text-slate-800">{path.title}</h3>
+                            <p className="mb-6 text-sm leading-relaxed text-slate-500">
                                 {path.description}
                             </p>
                             <div className="flex flex-wrap gap-2 mb-6">
@@ -101,10 +101,10 @@ const AdaptivePath = () => {
                                     <span>Path Readiness</span>
                                     <span>{path.progress}%</span>
                                 </div>
-                                <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
+                                <div className="w-full h-1 overflow-hidden rounded-full bg-slate-100">
                                     <div className={`bg-${path.color}-500 h-full rounded-full`} style={{ width: `${path.progress}%` }}></div>
                                 </div>
-                                <button className="w-full py-3 bg-slate-50 text-slate-600 rounded-full text-xs font-bold hover:bg-emerald-500 hover:text-white transition-all flex items-center justify-center gap-2">
+                                <button className="flex items-center justify-center w-full gap-2 py-3 text-xs font-bold transition-all rounded-full bg-slate-50 text-slate-600 hover:bg-emerald-500 hover:text-white">
                                     Explore Path
                                     <ArrowRight size={14} />
                                 </button>
@@ -114,29 +114,29 @@ const AdaptivePath = () => {
                 </div>
 
                 {/* AI Insights Section */}
-                <div className="card bg-slate-900 p-10 text-white relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+                <div className="relative p-10 overflow-hidden text-white card bg-slate-900">
+                    <div className="absolute top-0 right-0 w-64 h-64 translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-3xl"></div>
                     <div className="relative z-10">
-                        <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                        <h2 className="flex items-center gap-3 mb-6 text-2xl font-bold">
                             <Lightbulb className="text-yellow-400" />
                             AI Strategy Highlights
                         </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="space-y-4 p-6 bg-white/5 rounded-3xl border border-white/10">
-                                <h4 className="text-emerald-400 font-bold flex items-center gap-2">
+                        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                            <div className="p-6 space-y-4 border bg-white/5 rounded-3xl border-white/10">
+                                <h4 className="flex items-center gap-2 font-bold text-emerald-400">
                                     <CheckCircle size={18} />
                                     Automated Skill Gap Closure
                                 </h4>
-                                <p className="text-sm text-slate-400 leading-relaxed">
+                                <p className="text-sm leading-relaxed text-slate-400">
                                     Our engine identifies critical failures early and automatically shifts teaching resources to bridge those gaps before exams.
                                 </p>
                             </div>
-                            <div className="space-y-4 p-6 bg-white/5 rounded-3xl border border-white/10">
-                                <h4 className="text-blue-400 font-bold flex items-center gap-2">
+                            <div className="p-6 space-y-4 border bg-white/5 rounded-3xl border-white/10">
+                                <h4 className="flex items-center gap-2 font-bold text-blue-400">
                                     <BookOpen size={18} />
                                     Resource Optimization
                                 </h4>
-                                <p className="text-sm text-slate-400 leading-relaxed">
+                                <p className="text-sm leading-relaxed text-slate-400">
                                     By prioritizing high-impact lessons first, we increase the efficiency of study hours by up to 40% based on historical data.
                                 </p>
                             </div>

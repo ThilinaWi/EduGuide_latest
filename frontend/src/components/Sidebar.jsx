@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   Home,
   BarChart2,
@@ -11,17 +11,27 @@ import {
   LayoutGrid,
   CalendarCheck,
   BrainCircuit,
-  Database
+  Database,
+  Users
 } from 'lucide-react';
+import { clearAuth, getRole } from '../services/authService';
 
 const Sidebar = () => {
-  const navItems = [
-    { name: 'Learning Path', icon: <Home size={20} />, path: '/' },
-    { name: 'Risk Predictor', icon: <Target size={20} />, path: '/risk-predictor' },
-    { name: 'Stress Prediction', icon: <Activity size={20} />, path: '/stress' },
-    { name: 'Attendance Analyze', icon: <CalendarCheck size={20} />, path: '/attendance-analyze' },
-    { name: 'IQ Assessment', icon: <BrainCircuit size={20} />, path: '/iq-test' },
-  ];
+  const navigate = useNavigate();
+  const role = getRole();
+  const navItems = role === 'teacher'
+    ? [
+        { name: 'Teacher Dashboard', icon: <LayoutGrid size={20} />, path: '/teacher/dashboard' },
+        { name: 'Students', icon: <Users size={20} />, path: '/teacher/dashboard#students' },
+        { name: 'User Management', icon: <Database size={20} />, path: '/teacher/users' },
+      ]
+    : [
+        { name: 'Learning Path', icon: <Home size={20} />, path: '/add-student' },
+        { name: 'Risk Predictor', icon: <Target size={20} />, path: '/risk-predictor' },
+        { name: 'Stress Prediction', icon: <Activity size={20} />, path: '/stress' },
+        { name: 'Attendance Analyze', icon: <CalendarCheck size={20} />, path: '/attendance-analyze' },
+        { name: 'IQ Assessment', icon: <BrainCircuit size={20} />, path: '/iq-test' },
+      ];
 
   return (
     <div className="fixed inset-y-0 left-0 w-64 bg-[#0f172a] text-white flex flex-col z-20">
@@ -63,6 +73,10 @@ const Sidebar = () => {
         </NavLink>
         <button
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+          onClick={() => {
+            clearAuth();
+            navigate('/login', { replace: true });
+          }}
         >
           <LogOut size={20} />
           <span className="font-medium text-sm">Sign Out</span>
