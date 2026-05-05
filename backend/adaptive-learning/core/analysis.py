@@ -247,6 +247,7 @@ def recommend_online_resources(student_id, top_n=5):
 
     recommendations = []
 
+    # ── Extract specific weak topics per subject from priority_lessons ──
     for subject in weak_subjects[:3]:
         subject_score = weak_areas['weak_subjects'][subject]
 
@@ -258,9 +259,12 @@ def recommend_online_resources(student_id, top_n=5):
         else:
             priority = 'Medium'
 
+        # Get specific weak topics for this subject (if any)
+    
+
         # ── ML Model: recommend from trained TF-IDF model ──
         ml_resources = resource_recommender.recommend_with_model(
-            subject=subject,
+             subject=subject,
             level=preferred_level,
             top_n=2
         )
@@ -422,7 +426,7 @@ def recommend_al_stream(student_id):
 
 def generate_complete_learning_path(student_id):
     weak_areas = identify_weak_subjects(student_id)
-    resources = recommend_online_resources(student_id, top_n=8)
+    resources = recommend_online_resources(student_id, top_n=10)
     al_recommendations, subject_scores, overall_avg = recommend_al_stream(student_id)
     
     student_info = df_performance[df_performance['student_id'] == student_id].iloc[0]
@@ -519,9 +523,10 @@ def add_new_student(student_data: Dict[str, Any]) -> Dict[str, Any]:
     if student_id in df_performance['student_id'].values:
         raise ValueError(f"Student {student_id} already exists")
     
-    # Get CSV file path
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    csv_path = os.path.join(base_dir, "..", "data", "academic_performance_1000_students_with_iq_study_hours.csv")
+    # Get CSV file path at project root: .../unified-project/data/...
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_dir)))
+    csv_path = os.path.join(project_root, "data", "academic_performance_1000_students_with_iq_study_hours.csv")
     
     # Create new rows for each subject (matching CSV structure)
     subjects = ['Sinhala', 'Mathematics', 'Science', 'English', 'History', 'Buddhism', 'Geography', 'ICT']
