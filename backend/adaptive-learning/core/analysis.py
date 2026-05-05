@@ -247,6 +247,18 @@ def recommend_online_resources(student_id, top_n=5):
 
     recommendations = []
 
+    # ── Extract specific weak topics per subject from priority_lessons ──
+    subject_weak_topics = {}
+    for lesson_entry in weak_areas.get('priority_lessons', []):
+        subj = lesson_entry['subject']
+        lesson_name = lesson_entry['lesson']
+        if subj not in subject_weak_topics:
+            subject_weak_topics[subj] = []
+        # Extract topic name from lesson (e.g. 'Mathematics_sets' → 'sets')
+        topic = lesson_name.split('_', 1)[-1] if '_' in lesson_name else lesson_name
+        topic = topic.replace('_', ' ')
+        subject_weak_topics[subj].append(topic)
+
     for subject in weak_subjects[:3]:
         subject_score = weak_areas['weak_subjects'][subject]
 
@@ -258,11 +270,15 @@ def recommend_online_resources(student_id, top_n=5):
         else:
             priority = 'Medium'
 
+        # Get specific weak topics for this subject (if any)
+        weak_topics_for_subject = subject_weak_topics.get(subject, None)
+
         # ── ML Model: recommend from trained TF-IDF model ──
         ml_resources = resource_recommender.recommend_with_model(
             subject=subject,
             level=preferred_level,
-            top_n=2
+            topics=weak_topics_for_subject,
+            top_n=3
         )
 
         if ml_resources:
@@ -422,7 +438,7 @@ def recommend_al_stream(student_id):
 
 def generate_complete_learning_path(student_id):
     weak_areas = identify_weak_subjects(student_id)
-    resources = recommend_online_resources(student_id, top_n=8)
+    resources = recommend_online_resources(student_id, top_n=10)
     al_recommendations, subject_scores, overall_avg = recommend_al_stream(student_id)
     
     student_info = df_performance[df_performance['student_id'] == student_id].iloc[0]

@@ -1,7 +1,7 @@
 """
-API Gateway - Main Entry Point (Port 5000)
-Routes requests to 4 microservices:
-- Adaptive Learning: port 5001
+API Gateway - Main Entry Point (Port 3000)
+Routes requests to 3 microservices:
+- Adaptive Learning: port 5004
 - Risk Predictor: port 5002
 - Stress Prediction: port 5003
 - Attendance Analyzer: port 5004
@@ -32,7 +32,7 @@ app.add_middleware(
 )
 
 # Service URLs
-ADAPTIVE_LEARNING_URL = os.getenv("ADAPTIVE_LEARNING_URL", "http://localhost:5001")
+ADAPTIVE_LEARNING_URL = os.getenv("ADAPTIVE_LEARNING_URL", "http://localhost:5004")
 RISK_PREDICTOR_URL = os.getenv("RISK_PREDICTOR_URL", "http://localhost:5002")
 STRESS_PREDICTION_URL = os.getenv("STRESS_PREDICTION_URL", "http://localhost:5003")
 ATTENDANCE_ANALYZER_URL = os.getenv("ATTENDANCE_ANALYZER_URL", "http://localhost:5004")
