@@ -17,7 +17,6 @@
 //   { name: 'sleep_hours', label: 'Sleep Hours', min: 0, max: 12, step: 0.5 },
 //   { name: 'attendance', label: 'Attendance (%)', min: 0, max: 100, step: 1 },
 //   { name: 'tuition_hours_per_week', label: 'Tuition Hours / Week', min: 0, max: 40, step: 1 },
-//   { name: 'disaster_impact', label: 'Disaster Impact (0-10)', min: 0, max: 10, step: 1 },
 // ];
 
 // const StressPrediction = () => {
@@ -234,7 +233,7 @@
 // import {
 //   Brain, AlertCircle, CheckCircle, Heart, ChevronRight,
 //   BookOpen, Clock, Wallet, Smartphone, Moon, Users,
-//   Activity, Sparkles, CloudLightning, TrendingUp, TrendingDown,
+//   Activity, Sparkles, TrendingUp, TrendingDown,
 // } from 'lucide-react';
 // import client from '../api/client';
 // import Layout from './Layout';
@@ -265,7 +264,6 @@
 //   { name: 'sleep_hours',            label: 'Sleep Hours',              min: 0,  max: 12,  step: 0.5, unit: 'hrs', icon: Moon,            group: 'lifestyle' },
 //   { name: 'social_media',           label: 'Social Media Usage',       min: 0,  max: 12,  step: 0.5, unit: 'hrs', icon: Smartphone,      group: 'lifestyle' },
 //   { name: 'financial_status',       label: 'Financial Stability',      min: 0,  max: 10,  step: 1,   unit: '/10', icon: Wallet,          group: 'lifestyle' },
-//   { name: 'disaster_impact',        label: 'Disaster / Crisis Impact', min: 0,  max: 10,  step: 1,   unit: '/10', icon: CloudLightning,  group: 'lifestyle' },
 // ];
 
 // const GROUPS = [
@@ -600,7 +598,7 @@ import axios from 'axios';
 import {
   Brain, AlertCircle, CheckCircle, Heart, ChevronRight,
   BookOpen, Clock, Wallet, Smartphone, Moon, Users,
-  Activity, Sparkles, CloudLightning, TrendingUp, TrendingDown,
+  Activity, Sparkles, TrendingUp, TrendingDown,
 } from 'lucide-react';
 import client from '../api/client';
 import Layout from './Layout';
@@ -633,7 +631,6 @@ const inputFields = [
   { name: 'sleep_hours',            label: 'Sleep Hours',              min: 0,  max: 12,  step: 0.5, unit: 'hrs', icon: Moon,           group: 'lifestyle' },
   { name: 'social_media',           label: 'Social Media Usage',       min: 0,  max: 12,  step: 0.5, unit: 'hrs', icon: Smartphone,     group: 'lifestyle' },
   { name: 'financial_status',       label: 'Financial Stability',      min: 0,  max: 10,  step: 1,   unit: '/10', icon: Wallet,         group: 'lifestyle' },
-  { name: 'disaster_impact',        label: 'Disaster / Crisis Impact', min: 0,  max: 10,  step: 1,   unit: '/10', icon: CloudLightning, group: 'lifestyle' },
 ];
 
 const GROUPS = [
