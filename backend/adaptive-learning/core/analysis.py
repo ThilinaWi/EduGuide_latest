@@ -264,9 +264,10 @@ def recommend_online_resources(student_id, top_n=5):
 
         # ── ML Model: recommend from trained TF-IDF model ──
         ml_resources = resource_recommender.recommend_with_model(
-             subject=subject,
+            subject=subject,
             level=preferred_level,
-            top_n=2
+            topics=weak_topics_for_subject,
+            top_n=3
         )
 
         if ml_resources:
