@@ -228,7 +228,7 @@ async def get_student_from_mongodb(student_id: str):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=5004)
+    uvicorn.run(app, host="0.0.0.0", port=5001)
 
 @app.get("/students/mongodb/all/list")
 async def get_all_students_from_mongodb():

@@ -16,7 +16,7 @@ start "API Gateway" cmd /k "cd backend\api-gateway && if exist .venv\Scripts\act
 timeout /t 2
 
 REM Start Adaptive Learning Backend
-echo Starting Adaptive Learning Backend on port 5004...
+echo Starting Adaptive Learning Backend on port 5001...
 start "Adaptive Learning Backend" cmd /k "cd backend\adaptive-learning && if exist .venv\Scripts\activate.bat (call .venv\Scripts\activate.bat) && python -m pip install -r requirements.txt -q && python main.py"
 timeout /t 2
 
