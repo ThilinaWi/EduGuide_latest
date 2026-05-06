@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 HERE = os.path.dirname(__file__)
 load_dotenv(os.path.join(HERE, ".env"), override=True)
 
+# paths to your ML models
 MODEL_PATH = os.path.normpath(os.path.join(HERE, "stress_level_model_final.pkl"))
 RECOMMENDATION_MODEL_PATH = os.path.normpath(os.path.join(HERE, "recommendation_model.pkl"))
 RECOMMENDATION_ENCODER_PATH = os.path.normpath(os.path.join(HERE, "rec_label_encoder.pkl"))
@@ -80,7 +81,7 @@ def get_recommendations(data, top_n=3):
         data.get("social_media", 0),
     ]])
 
-    # If model supports probabilities, use them to rank recommendations
+    # model supports probabilities, use them to rank recommendations
     if hasattr(recommendation_model, "predict_proba"):
         try:
             probabilities = recommendation_model.predict_proba(recommendation_features)[0]
@@ -129,7 +130,7 @@ if MONGODB_URI:
         print(f"MongoDB connection failed: {e}")
         mongo_collection = None
 
-
+# Allows frontend (React) to call backend
 @app.after_request
 def add_cors_headers(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
@@ -159,12 +160,13 @@ def predict():
         data.get("travel_time", 0),
         data.get("financial_status", 0),
         data.get("social_media", 0),
+        
         data.get("sleep_hours", 0),
         data.get("attendance", 0),
         data.get("tuition_hours_per_week", 0),
-        data.get("disaster_impact", 0),
+        
     ]])
-
+  # Sends data to trained ML model & Model returns a number:
     try:
         pred = model.predict(features)[0]
     except Exception as e:
@@ -177,9 +179,11 @@ def predict():
 
     recommendation = recommendations[0] if recommendations else "Unknown"
 
+# Convert Numeric → Label
     labels = {0: "Good", 1: "Bad", 2: "Awful"}
     stress_level = labels.get(int(pred), "Unknown")
 
+# Save to MongoDB
     saved = False
     save_error = None
     if mongo_collection is not None:
@@ -226,7 +230,7 @@ def predict():
 
     return jsonify(response)
 
-
+# SERVE FRONTEND (React)
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_frontend(path):
@@ -239,6 +243,6 @@ def serve_frontend(path):
         return send_from_directory(build_dir, 'index.html')
     return "Frontend build not found. Run `npm run build` in the frontend folder.", 200
 
-
+# RUN SERVER
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=PORT)
