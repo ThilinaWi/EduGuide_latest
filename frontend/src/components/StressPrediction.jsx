@@ -772,6 +772,10 @@ export default function StressPrediction() {
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState(null);
   const [tab, setTab]         = useState('academic');
+  const [history, setHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState(null);
+  const [showHistory, setShowHistory] = useState(false);
 
   const onChange = e => {
     const { name, value } = e.target;
@@ -799,6 +803,40 @@ export default function StressPrediction() {
         setError(formatApiError(err));
       }
     } finally { setLoading(false); }
+  };
+
+  const onGetHistory = async () => {
+    setHistoryLoading(true);
+    setHistoryError(null);
+    setShowHistory(true);
+
+    try {
+      const r = await axios.get(`${STRESS_API_URL}/api/history`, { params: { limit: 10 } });
+      setHistory(Array.isArray(r?.data?.history) ? r.data.history : []);
+      if (r?.data?.error) {
+        setHistoryError(r.data.error);
+      }
+    } catch {
+      try {
+        const r = await client.get('/api/stress/api/history', { params: { limit: 10 } });
+        setHistory(Array.isArray(r?.data?.history) ? r.data.history : []);
+        if (r?.data?.error) {
+          setHistoryError(r.data.error);
+        }
+      } catch (err) {
+        setHistory([]);
+        setHistoryError(err?.response?.data?.error || 'Failed to load prediction history.');
+      }
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  const formatHistoryDate = (dateValue) => {
+    if (!dateValue) return 'Unknown time';
+    const d = new Date(dateValue);
+    if (Number.isNaN(d.getTime())) return 'Unknown time';
+    return d.toLocaleString();
   };
 
   const tabIdx = GROUPS.findIndex(g => g.key === tab);
@@ -937,18 +975,34 @@ export default function StressPrediction() {
                       Next <ChevronRight size={14} />
                     </button>
                   ) : (
-                    <button onClick={onSubmit} disabled={loading} style={{
-                      padding: '10px 26px', borderRadius: 10, border: 'none',
-                      background: loading ? C.track : C.green,
-                      color: C.white, fontWeight: 700, fontSize: 14,
-                      cursor: loading ? 'not-allowed' : 'pointer',
-                      display: 'flex', alignItems: 'center', gap: 8,
-                      boxShadow: loading ? 'none' : `0 4px 16px ${C.green}33`,
-                    }}>
-                      {loading
-                        ? <><Activity size={15} style={{ animation: 'sp-spin 1s linear infinite' }} /> Analysing...</>
-                        : <><Sparkles size={15} /> Predict Stress Level</>}
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <button onClick={onGetHistory} disabled={historyLoading} style={{
+                        padding: '10px 16px', borderRadius: 10,
+                        border: `1px solid ${C.border}`,
+                        background: C.white,
+                        color: C.text,
+                        fontWeight: 600, fontSize: 13,
+                        cursor: historyLoading ? 'not-allowed' : 'pointer',
+                        display: 'flex', alignItems: 'center', gap: 7,
+                      }}>
+                        {historyLoading
+                          ? <><Activity size={14} style={{ animation: 'sp-spin 1s linear infinite' }} /> Loading...</>
+                          : <><Clock size={14} /> Get History</>}
+                      </button>
+
+                      <button onClick={onSubmit} disabled={loading} style={{
+                        padding: '10px 26px', borderRadius: 10, border: 'none',
+                        background: loading ? C.track : C.green,
+                        color: C.white, fontWeight: 700, fontSize: 14,
+                        cursor: loading ? 'not-allowed' : 'pointer',
+                        display: 'flex', alignItems: 'center', gap: 8,
+                        boxShadow: loading ? 'none' : `0 4px 16px ${C.green}33`,
+                      }}>
+                        {loading
+                          ? <><Activity size={15} style={{ animation: 'sp-spin 1s linear infinite' }} /> Analysing...</>
+                          : <><Sparkles size={15} /> Predict Stress Level</>}
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -981,6 +1035,63 @@ export default function StressPrediction() {
                       <span style={{ fontSize: 13, color: C.textSub, lineHeight: 1.6 }}>{rec}</span>
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* Prediction history */}
+            {showHistory && (
+              <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 16, padding: 20, marginTop: 14 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 600, color: C.text, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Clock size={16} style={{ color: C.green }} /> Previous Predictions
+                </h3>
+
+                {historyError && (
+                  <div style={{ display: 'flex', gap: 10, padding: 12, background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 10, marginBottom: 12 }}>
+                    <AlertCircle size={14} style={{ color: '#DC2626', flexShrink: 0, marginTop: 1 }} />
+                    <span style={{ fontSize: 12, color: '#B91C1C' }}>{historyError}</span>
+                  </div>
+                )}
+
+                {!historyLoading && history.length === 0 && !historyError && (
+                  <p style={{ fontSize: 13, color: C.textSub, margin: 0 }}>No previous predictions found yet.</p>
+                )}
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {history.map((item, idx) => {
+                    const meta = getStressMeta(item?.stress_level || '');
+                    const confidencePct = Number.isFinite(item?.confidence) ? Math.round(item.confidence * 100) : null;
+                    const input = item?.input || {};
+
+                    return (
+                      <div key={`${item?.created_at || 'history'}-${idx}`} style={{
+                        border: `1px solid ${C.border}`,
+                        borderRadius: 12,
+                        padding: 14,
+                        background: C.bg,
+                      }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+                          <span style={{ fontSize: 12, color: C.textSub }}>{formatHistoryDate(item?.created_at)}</span>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: meta.color, background: meta.bg, border: `1px solid ${meta.ring}`, borderRadius: 99, padding: '3px 10px' }}>
+                            {item?.stress_level || 'Unknown'}
+                          </span>
+                        </div>
+
+                        <div style={{ fontSize: 13, color: C.text, marginBottom: 5 }}>
+                          <strong>Recommendation:</strong> {item?.recommendation || 'Unknown'}
+                        </div>
+
+                        <div style={{ fontSize: 12, color: C.textSub, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 6 }}>
+                          <span>Confidence: {confidencePct !== null ? `${confidencePct}%` : 'N/A'}</span>
+                          <span>Sleep: {input.sleep_hours ?? 0} hrs</span>
+                          <span>Study: {input.daily_study ?? 0} hrs</span>
+                          <span>Attendance: {input.attendance ?? 0}%</span>
+                          <span>Social Media: {input.social_media ?? 0} hrs</span>
+                          <span>Financial: {input.financial_status ?? 0}/10</span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
