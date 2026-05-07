@@ -190,12 +190,12 @@ def predict():
         if not data:
             return jsonify({'error': 'No data provided'}), 400
 
-        attendance = float(data.get('attendance', 75))
-        avg_marks = float(data.get('avg_marks', 50))
-        study_hours = float(data.get('study_hours', 10))
-        homework_rate = float(data.get('homework_rate', 70)) / 100.0
-        screen_time = float(data.get('screen_time', 3))
-        study_consistency = float(data.get('study_consistency', 50)) / 100.0
+        attendance = float(data.get('attendance'))
+        avg_marks = float(data.get('avg_marks'))
+        study_hours = float(data.get('study_hours'))
+        homework_rate = float(data.get('homework_rate')) / 100.0
+        screen_time = float(data.get('screen_time'))
+        study_consistency = float(data.get('study_consistency')) / 100.0
         subject_scores = data.get('subject_scores', None)
 
         feature_vector = build_feature_vector(
@@ -355,12 +355,12 @@ def api_recommend():
             return jsonify({'error': 'No data provided'}), 400
 
         recs = _generate_recommendations(
-            attendance=float(data.get('attendance', 75)),
-            avg_marks=float(data.get('avg_marks', 50)),
-            study_hours=float(data.get('study_hours', 10)),
-            homework_rate=float(data.get('homework_rate', 70)),
-            screen_time=float(data.get('screen_time', 3)),
-            study_consistency=float(data.get('study_consistency', 50)),
+            attendance=float(data.get('attendance')),
+            avg_marks=float(data.get('avg_marks')),
+            study_hours=float(data.get('study_hours')),
+            homework_rate=float(data.get('homework_rate')),
+            screen_time=float(data.get('screen_time')),
+            study_consistency=float(data.get('study_consistency')),
             risk_category=data.get('risk_level', 'Medium'),
         )
         return jsonify({'recommendations': recs})
